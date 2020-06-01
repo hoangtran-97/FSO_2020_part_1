@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import ReactDOM from "react-dom";
 const anecdotes = [
     "If it hurts, do it more often",
@@ -11,14 +11,30 @@ const anecdotes = [
 
 const App = () => {
     const [selected, setSelected] = useState(0);
+    const [rating, setRating] = useState([0, 0, 0, 0, 0, 0]);
+    const [maxRating, setMaxRating] = useState(0);
+    useEffect(() => {
+        const indexOfMax = rating.indexOf(Math.max(...rating));
+        setMaxRating(indexOfMax);
+    }, [maxRating, rating]);
     const randomResult = () => {
         const result = Math.floor(Math.random() * anecdotes.length);
         setSelected(result);
     };
+    const voteAnecdotes = () => {
+        const rated = [...rating];
+        rated[selected] += 1;
+        setRating(rated);
+    };
+
     return (
         <>
             <p>{anecdotes[selected]}</p>
+            <p>Has {rating[selected]} votes</p>
+            <button onClick={voteAnecdotes}>Vote</button>
             <button onClick={randomResult}>Next anecdotes</button>
+            <h1>Anecdotes with highest rating</h1>
+            <p>{anecdotes[maxRating]}</p>
         </>
     );
 };
